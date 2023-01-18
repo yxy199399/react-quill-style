@@ -29,3 +29,7 @@ code-block
 formula（公式）
 image
 video
+
+发布前先检查这两个命名是否生效，没有生效，通过npx执行
+"build:css": "cpx 'node_modules/quill/dist/quill.*.css' dist",
+"build:font": "cpx 'src/register/font/index.css' lib/register/font",

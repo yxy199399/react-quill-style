@@ -15,6 +15,6 @@
     "outDir": "lib",
     "lib": ["dom", "esnext"],
     "types": ["node"],
-    "jsx": "react"
+    "jsx": "react",
   }
 }
