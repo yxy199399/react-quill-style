@@ -1,5 +1,5 @@
 {
-  "name": "react-quill",
+  "name": "react-quill-style",
   "version": "1.0.0",
   "description": "The Quill rich-text editor as a React component.",
   "author": "yaoxianyou",
@@ -63,7 +63,7 @@
     "chai-enzyme": "^1.0.0-beta.1",
     "cheerio": "^1.0.0-rc.3",
     "cpx": "^1.5.0",
-    "css-loader": "^6.7.3",
+    "css-loader": "5.2.7",
     "cypress": "^4.3.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
