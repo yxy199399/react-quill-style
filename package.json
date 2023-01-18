@@ -1,12 +1,12 @@
 {
   "name": "react-quill-style",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The Quill rich-text editor as a React component.",
   "author": "yaoxianyou",
   "license": "MIT",
-  "homepage": "https://github.com/zenoamaro/react-quill",
-  "bugs": "https://github.com/zenoamaro/react-quill/issues",
-  "repository": "https://github.com/zenoamaro/react-quill.git",
+  "homepage": "https://github.com/yxy199399/react-quill-style.git",
+  "bugs": "https://github.com/yxy199399/react-quill-style/issues",
+  "repository": "https://github.com/yxy199399/react-quill-style.git",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
