@@ -1,0 +1,76 @@
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='SimSun']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='SimSun']::before {
+  font-family: SimSun;
+  content: '宋体';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='SimHei']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='SimHei']::before {
+  font-family: SimHei;
+  content: '黑体';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='Microsoft-YaHei']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='Microsoft-YaHei']::before {
+  font-family: Microsoft-YaHei;
+  content: '雅黑';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='KaiTi']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='KaiTi']::before {
+  font-family: KaiTi;
+    content: '楷体';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='FangSong']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='FangSong']::before {
+  font-family: FangSong;
+  content: '仿宋';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='Arial']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='Arial']::before {
+  font-family: Arial;
+  content: 'Arial';
+}
+
+/* .ql-snow .ql-picker.ql-font .ql-picker-label[data-value='pingfang']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='pingfang']::before { 
+  font-family: pingfang;
+  content: '苹方';
+} */
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='12px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='12px']::before {
+  content: '12px';
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='14px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='14px']::before {
+  content: '14px';
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='16px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='16px']::before {
+  content: '16px';
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='20px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='20px']::before {
+  content: '20px';
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='20px']::before,
+.ql-snow .ql-picker.ql-size  .ql-picker-item[data-value='20px']::before {
+  content: '20px';
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='24px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='24px']::before {
+  content: '24px';
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='36px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='24px']::before {
+  content: '36px';
+}
