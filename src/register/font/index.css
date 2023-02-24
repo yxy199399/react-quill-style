@@ -60,17 +60,12 @@
   content: '20px';
 }
 
-.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='20px']::before,
-.ql-snow .ql-picker.ql-size  .ql-picker-item[data-value='20px']::before {
-  content: '20px';
-}
-
 .ql-snow .ql-picker.ql-size .ql-picker-label[data-value='24px']::before,
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value='24px']::before {
   content: '24px';
 }
 
 .ql-snow .ql-picker.ql-size .ql-picker-label[data-value='36px']::before,
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='24px']::before {
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='36px']::before {
   content: '36px';
 }
