@@ -90,6 +90,29 @@ class Editor extends React.Component {
           onChangeSelection={this.onEditorChangeSelection}
           onFocus={this.onEditorFocus}
           onBlur={this.onEditorBlur}
+          modules={{
+            toolbar: {
+              container: [
+                ['bold', 'italic', 'underline', 'strike', 'code'], 
+                ['blockquote', 'code-block'],
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'script': 'sub'}, { 'script': 'super' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }], 
+                [{ 'direction': 'rtl' }], 
+                [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                [{ 'font': ['SimSun', 'SimHei', 'Microsoft-YaHei', 'KaiTi', 'FangSong', 'Arial'] }],
+                [{ 'align': [] }],
+                [{ 'indention': '-1'}, { 'indention': '+1' }], 
+                [{'line-height': [1, 1.2, 1.4, 1.5, 1.8, 2, false]}]
+                ['image', 'video', 'formula'],
+                ['clean']                      
+              ]
+            }
+          }}
         />}
       </div>
     );

@@ -1,1 +1,1 @@
-../dist/react-quill.js
+import '../dist/react-quill.js'

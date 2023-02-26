@@ -15,6 +15,7 @@ import Quill, {
   StringMap,
   Sources,
 } from 'quill';
+import icons from './register/add/icons'
 import './register'
 
 // Merged namespace hack to export types along with default object
@@ -207,6 +208,26 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
     );
   }
 
+  // 创建按钮
+  buildButtons(buttons: HTMLButtonElement[], icons: Record<string, any>) {
+    buttons.forEach((button) => {
+      let className = button.getAttribute('class') || '';
+      className.split(/\s+/).forEach((name: any) => {
+        if (!name.startsWith('ql-')) return;
+        name = name.slice('ql-'.length);
+        if (icons[name] == null) return;
+        if (typeof icons[name] === 'string') {
+          button.innerHTML = icons[name];
+        } else {
+          let value: any = button.value || '';
+          if (value != null && icons[name][value]) {
+            button.innerHTML = icons[name][value];
+          }
+        }
+      });
+    });
+  }
+
   shouldComponentUpdate(nextProps: ReactQuillProps, nextState: ReactQuillState) {
     this.validateProps(nextProps);
 
@@ -251,6 +272,20 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
   }
 
   componentDidMount() {
+    const quill = this.editor as any
+    const toolbar = quill?.getModule('toolbar')
+    toolbar?.addHandler('image', '1231');
+    console.log(quill, toolbar, toolbar?.addHandler)
+    // 自定义操作工具栏显示
+    const indentionBtn = toolbar?.container?.querySelectorAll('.ql-indention')
+    console.log(indentionBtn, toolbar?.container?.querySelectorAll)
+    if (indentionBtn)  {
+      setTimeout(() => {
+        this.buildButtons([].slice.call(indentionBtn), icons);
+      });
+      
+    }
+    
     this.instantiateEditor();
     this.setEditorContents(this.editor!, this.getEditorContents());
   }

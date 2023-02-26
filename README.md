@@ -29,3 +29,6 @@ code-block
 formula（公式）
 image
 video
+
+调试方法，npm run build 后将/dist/react-quill.js 文件内容复制到/demo/react-quill-style.js
+运行npm run demo
