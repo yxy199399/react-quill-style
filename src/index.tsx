@@ -277,7 +277,7 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
     toolbar?.addHandler('image', '1231');
     console.log(quill, toolbar, toolbar?.addHandler)
     // 自定义操作工具栏显示
-    const indentionBtn = toolbar?.container?.querySelectorAll('.ql-indention')
+    const indentionBtn = toolbar?.container?.querySelectorAll('*[class*="ql-self-"]')
     console.log(indentionBtn, toolbar?.container?.querySelectorAll)
     if (indentionBtn)  {
       setTimeout(() => {

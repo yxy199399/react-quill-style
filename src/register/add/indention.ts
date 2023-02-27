@@ -30,7 +30,7 @@ class IndentStyleAttributor extends Parchment.Attributor.Style {
     return super.canAdd(node, value) || super.canAdd(node, parseInt(value))
   }
 }
-const IndentStyle = new IndentStyleAttributor('indention', 'text-indent', {
+const IndentStyle = new IndentStyleAttributor('self-indention', 'text-indent', {
   scope: Parchment.Scope.BLOCK,
   whitelist: [1, 2, 3, 4, 5, 6, 7, 8].map((item) => item * 1 + 'em'),
 })
