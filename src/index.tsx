@@ -17,6 +17,8 @@ import Quill, {
 } from 'quill';
 import icons from './register/add/icons'
 import './register'
+// title
+import { toolbarTips } from './title';
 
 // Merged namespace hack to export types along with default object
 // See: https://github.com/Microsoft/TypeScript/issues/2719
@@ -274,16 +276,40 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
   componentDidMount() {
     const quill = this.editor as any
     const toolbar = quill?.getModule('toolbar')
-    toolbar?.addHandler('image', '1231');
-    console.log(quill, toolbar, toolbar?.addHandler)
-    // 自定义操作工具栏显示
+    // toolbar?.addHandler('image', '1231'); 无效
+    // 自定义操作工具栏显示,在./register/add/icons中添加对应图标
     const indentionBtn = toolbar?.container?.querySelectorAll('*[class*="ql-self-"]')
-    console.log(indentionBtn, toolbar?.container?.querySelectorAll)
     if (indentionBtn)  {
       setTimeout(() => {
         this.buildButtons([].slice.call(indentionBtn), icons);
       });
-      
+    }
+
+    // 给图标添加title提示
+    const aButton = toolbar?.container?.querySelectorAll("button")
+    const aSelect = toolbar?.container?.querySelectorAll(".ql-picker")
+    if (aButton) {
+      aButton.forEach((item: HTMLButtonElement) => {
+        const className = item.className
+        const val = item.value
+        if (val && className && toolbarTips?.[className]?.[val]) {
+          item.title = toolbarTips?.[className]?.[val]
+        } else if (className && toolbarTips?.[className]) {
+          item.title = toolbarTips?.[className]
+        }
+      })
+      aSelect.forEach((item: HTMLButtonElement) => {
+        const className = item.className
+        // 找到对应标签
+        const tag = className.split(' ').find((item: string) => !item.includes('picker'))
+        if (tag) {
+          if (tag === 'ql-header') { // 标题有value需单独处理
+            item.title = '标题'
+          } else if (toolbarTips?.[tag]) {
+            item.title = toolbarTips?.[tag]
+          }
+        }
+      })
     }
     
     this.instantiateEditor();

@@ -7,7 +7,7 @@
 }
 
 .ql-picker.ql-self-lineHeight {
-  width: 100px;
+  width: 50px;
 }
 
 .ql-picker.ql-self-lineHeight .ql-picker-label[data-value='1']::before,
