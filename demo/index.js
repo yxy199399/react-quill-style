@@ -90,6 +90,52 @@ class Editor extends React.Component {
           onChangeSelection={this.onEditorChangeSelection}
           onFocus={this.onEditorFocus}
           onBlur={this.onEditorBlur}
+          modules={{
+            toolbar: {
+              container: [
+                ['bold', 'italic', 'underline', 'strike', 'code'], 
+                ['blockquote', 'code-block'],
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'script': 'sub'}, { 'script': 'super' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }], 
+                [{ 'direction': 'rtl' }], 
+                [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                [{ 'font': ['SimSun', 'SimHei', 'Microsoft-YaHei', 'KaiTi', 'FangSong', 'Arial'] }],
+                [{ 'align': [] }],
+                // 自定义操作添加self-便于查找和操作
+                [{ 'self-indention': '-1'}, { 'self-indention': '+1' }], 
+                [{'self-lineHeight': [
+                  false,
+                  '1',
+                  '1.1',
+                  '1.2',
+                  '1.3',
+                  '1.5',
+                  '1.6',
+                  '1.7',
+                  '1.8',
+                  '1.9',
+                  '2',
+                  '2.1',
+                  '2.2',
+                  '2.3',
+                  '2.4',
+                  '2.5',
+                  '2.6',
+                  '2.7',
+                  '2.8',
+                  '2.9',
+                  '3'
+                ]}],
+                ['image', 'video', 'formula'],
+                ['clean']                      
+              ]
+            }
+          }}
         />}
       </div>
     );
