@@ -42,5 +42,6 @@ export const toolbarTips: Record<string, any> = {
     '+1': '首行缩进',
     '-1': '取消首行缩进'
   },
-  'ql-self-lineHeight': '行高'
+  'ql-self-lineHeight': '行高',
+  'ql-self-image': '上传图片'
 }

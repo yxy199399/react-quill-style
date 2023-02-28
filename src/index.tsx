@@ -14,6 +14,7 @@ import Quill, {
   BoundsStatic,
   StringMap,
   Sources,
+  Delta
 } from 'quill';
 import icons from './register/add/icons'
 import './register'
@@ -230,6 +231,48 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
     });
   }
 
+  async uploadFn({
+    callback
+  }: {callback: (res: any) => void}) {
+    let oInput: HTMLInputElement | null = document.createElement('input');
+    const accept = '.png,.gif,.jpeg,.bmp,.jpg'
+    if (oInput) {
+      oInput.setAttribute('type', 'file');
+      oInput.setAttribute('accept', accept);
+      oInput.addEventListener('change', async function () {
+        if (oInput && oInput.files != null && oInput.files[0] != null) {
+          const files = Array.from(oInput.files)
+          const formDate = new FormData()
+          files.forEach((item) => {
+            // 校验文件类型
+            const fileName = item.name
+            const ext = fileName.substring(fileName.lastIndexOf(".")+1);
+            if (accept.includes(ext)) {
+              formDate.append('file', item)
+            } else {
+              // 文件格式不支持
+              
+            }
+          })
+  
+          const res = await fetch('http://10.36.16.221:6500/file/upload', {
+            method: 'post',
+            headers: {
+              token: '4aba746c3e583e8eaf34b18c1739ff9b'
+            },
+            body: formDate
+          })
+          callback(await res.json())
+          // 释放内存
+          oInput = null
+        }
+      });
+      oInput.click();
+    }
+    
+    // this.container.appendChild(oInput);
+  }
+
   shouldComponentUpdate(nextProps: ReactQuillProps, nextState: ReactQuillState) {
     this.validateProps(nextProps);
 
@@ -276,7 +319,6 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
   componentDidMount() {
     const quill = this.editor as any
     const toolbar = quill?.getModule('toolbar')
-    // toolbar?.addHandler('image', '1231'); 无效
     // 自定义操作工具栏显示,在./register/add/icons中添加对应图标
     const indentionBtn = toolbar?.container?.querySelectorAll('*[class*="ql-self-"]')
     if (indentionBtn)  {
@@ -285,7 +327,7 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
       });
     }
 
-    // 给图标添加title提示
+    // 给图标添加title提示,在./title.ts中添加对应标题
     const aButton = toolbar?.container?.querySelectorAll("button")
     const aSelect = toolbar?.container?.querySelectorAll(".ql-picker")
     if (aButton) {
@@ -311,6 +353,34 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
         }
       })
     }
+
+    toolbar?.addHandler('self-image', () => {
+      this.uploadFn({
+        callback: async (res) => {
+          console.log(res, quill?.updateContents)
+          console.log(quill?.emitter?.sources, quill?.sources?.SILENT, res?.data?.fileUrl)
+          if (res?.status === 200) {
+            debugger
+            const filePath = 'http://10.36.16.221:6500' + res?.data?.fileUrl
+            var range = quill.getSelection(true);
+            console.log(range)
+            console.log(111, new Delta().retain(range.index).insert('Quill'))
+            quill.updateContents(new Delta().retain(range.index).insert('Quill'));
+            // quill.updateContents(new Delta().retain(range.index).insert({ image: filePath }));
+            quill.setSelection(range.index + 1);
+            // quill
+            // var reader = new FileReader();
+          // reader.onload = function (e) {
+          //   var range = _this3.quill.getSelection(true);
+          //   _this3.quill.updateContents(new _quillDelta2.default().retain(range.index).delete(range.length).insert({ image: e.target.result }), _emitter2.default.sources.USER);
+          //   _this3.quill.setSelection(range.index + 1, _emitter2.default.sources.SILENT);
+          //   fileInput.value = "";
+          // };
+          // reader.readAsDataURL(oInput.files[0]);
+          }
+        }
+      })
+    });
     
     this.instantiateEditor();
     this.setEditorContents(this.editor!, this.getEditorContents());
