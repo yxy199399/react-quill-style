@@ -1,3 +1,5 @@
+import './imageResize'
+import './imageDrop'
 import './file'
 import './lineStyle'
 import './bold'

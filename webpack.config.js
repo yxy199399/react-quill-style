@@ -1,4 +1,5 @@
 const Path = require('path');
+const webpack = require("webpack");
 const dir = (...args) => Path.resolve(__dirname, ...args);
 
 module.exports = {
@@ -15,6 +16,14 @@ module.exports = {
       {test:/\.css$/, loader: 'style-loader!css-loader', exclude: /node_modules/}
     ],
   },
+
+  plugins: [
+    new webpack.ProvidePlugin({
+      // 在这儿添加下面两行
+      'window.Quill': 'quill/dist/quill.js',
+      'Quill': 'quill/dist/quill.js'
+    })
+  ],
 
   externals: {
     'react': {

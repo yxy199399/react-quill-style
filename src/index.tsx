@@ -14,12 +14,12 @@ import Quill, {
   BoundsStatic,
   StringMap,
   Sources,
-  Delta
 } from 'quill';
 import icons from './register/add/icons'
 import './register'
 // title
 import { toolbarTips } from './title';
+const Delta = Quill.import('delta')
 
 // Merged namespace hack to export types along with default object
 // See: https://github.com/Microsoft/TypeScript/issues/2719
@@ -71,6 +71,17 @@ namespace ReactQuill {
     tabIndex?: number,
     theme?: string,
     value?: Value,
+    serverUrl?: '', // 上传地址
+    imageProps?: { // 上传图片相关参数配置
+      accept?: string // 文件格式限制
+      size?: number // 文件大小限制, 单位M
+      headers?: Record<string, any> // 请求头
+      error?: (res: string) => void // 错误回调
+      extendsData?: Record<string, any> // 其它参数
+      response?: (res: Record<string, any>) => string // 请求结果回调
+      fileName?: string // 附件字段名,默认file
+    }
+    
   }
 
   export interface UnprivilegedEditor {
@@ -235,34 +246,54 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
     callback
   }: {callback: (res: any) => void}) {
     let oInput: HTMLInputElement | null = document.createElement('input');
-    const accept = '.png,.gif,.jpeg,.bmp,.jpg'
+    let defaultAccept = '.png,.gif,.jpeg,.bmp,.jpg'
+    const { serverUrl, imageProps } = this.props
+    const { size, headers, error, response, extendsData, accept, fileName } = imageProps || {}
+    const fileNameKey = fileName || 'file'
+    if (accept) defaultAccept = accept
     if (oInput) {
       oInput.setAttribute('type', 'file');
-      oInput.setAttribute('accept', accept);
+      oInput.setAttribute('accept', defaultAccept);
       oInput.addEventListener('change', async function () {
         if (oInput && oInput.files != null && oInput.files[0] != null) {
           const files = Array.from(oInput.files)
           const formDate = new FormData()
-          files.forEach((item) => {
-            // 校验文件类型
+          for (let i = 0; i < files.length; i++) {
+            const item = files[i]
             const fileName = item.name
-            const ext = fileName.substring(fileName.lastIndexOf(".")+1);
-            if (accept.includes(ext)) {
-              formDate.append('file', item)
-            } else {
-              // 文件格式不支持
-              
+            const ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+            // 文件超出大小限制
+            if (size && size * 1024 * 1024 < item.size) {
+              error?.(`${item?.name}文件超过${item.size}M`);
+              continue;
             }
-          })
-  
-          const res = await fetch('http://10.36.16.221:6500/file/upload', {
+            // 文件格式不支持
+            if (!defaultAccept.includes(ext)) {
+              error?.(item?.name + '文件格式错误')
+              continue;
+            }
+            formDate.append(fileNameKey, item)
+            // 添加其它额外参数
+            if (extendsData) {
+              Object.keys(extendsData).forEach((key) => {
+                formDate.append(key, extendsData.key)
+              })
+            }
+          }
+          const res = await fetch(serverUrl!, {
             method: 'post',
             headers: {
-              token: '4aba746c3e583e8eaf34b18c1739ff9b'
+              ...(headers || {})
             },
             body: formDate
           })
-          callback(await res.json())
+          const resData = await res.json()
+          let imgUrl = response?.(resData)
+          if (!imgUrl && resData?.status === 200) {
+            // 默认处理，成功status === 200
+            imgUrl = resData?.data?.fileUrl
+          }
+          callback(imgUrl)
           // 释放内存
           oInput = null
         }
@@ -317,6 +348,7 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
   }
 
   componentDidMount() {
+    const _this = this
     const quill = this.editor as any
     const toolbar = quill?.getModule('toolbar')
     // 自定义操作工具栏显示,在./register/add/icons中添加对应图标
@@ -353,31 +385,20 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
         }
       })
     }
-
     toolbar?.addHandler('self-image', () => {
+      console.log(_this, _this.props, _this.props.serverUrl)
+      if (!_this.props.serverUrl) {
+        // 执行原有方法
+        toolbar.handlers?.image.call(toolbar)
+        return
+      }
       this.uploadFn({
         callback: async (res) => {
-          console.log(res, quill?.updateContents)
-          console.log(quill?.emitter?.sources, quill?.sources?.SILENT, res?.data?.fileUrl)
-          if (res?.status === 200) {
-            debugger
-            const filePath = 'http://10.36.16.221:6500' + res?.data?.fileUrl
-            var range = quill.getSelection(true);
-            console.log(range)
-            console.log(111, new Delta().retain(range.index).insert('Quill'))
-            quill.updateContents(new Delta().retain(range.index).insert('Quill'));
-            // quill.updateContents(new Delta().retain(range.index).insert({ image: filePath }));
-            quill.setSelection(range.index + 1);
-            // quill
-            // var reader = new FileReader();
-          // reader.onload = function (e) {
-          //   var range = _this3.quill.getSelection(true);
-          //   _this3.quill.updateContents(new _quillDelta2.default().retain(range.index).delete(range.length).insert({ image: e.target.result }), _emitter2.default.sources.USER);
-          //   _this3.quill.setSelection(range.index + 1, _emitter2.default.sources.SILENT);
-          //   fileInput.value = "";
-          // };
-          // reader.readAsDataURL(oInput.files[0]);
-          }
+          if (!res) return
+          const filePath = res
+          const range = quill.getSelection(true);
+          quill.updateContents(new Delta().retain(range.index).insert({ image: filePath }));
+          quill.setSelection(range.index + 1);
         }
       })
     });
@@ -439,10 +460,16 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
   }
 
   getEditorConfig(): QuillOptions {
+    const modules =  Object.assign({
+      imageDrop: true,
+      imageResize: {
+        modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
+      },
+    }, this.props.modules)
     return {
       bounds: this.props.bounds,
       formats: this.props.formats,
-      modules: this.props.modules,
+      modules: modules,
       placeholder: this.props.placeholder,
       readOnly: this.props.readOnly,
       scrollingContainer: this.props.scrollingContainer,
