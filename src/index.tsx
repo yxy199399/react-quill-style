@@ -385,8 +385,9 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
         }
       })
     }
+
+    // 添加自定义图片上传事件
     toolbar?.addHandler('self-image', () => {
-      console.log(_this, _this.props, _this.props.serverUrl)
       if (!_this.props.serverUrl) {
         // 执行原有方法
         toolbar.handlers?.image.call(toolbar)
@@ -402,6 +403,19 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
         }
       })
     });
+
+    // 添加自定义视频上传事件
+    toolbar?.addHandler('self-video', () => {
+      console.log('视频上传')
+      const range = quill.getSelection(true);
+      console.log(range)
+      // 可以不通过toolbar插入组件
+      quill.updateContents(new Delta().retain(range.index).insert({process: '50%'}));
+      setTimeout(() => {
+        const content = quill.getContents();
+        console.log(content)
+      }, 2000);
+    })
     
     this.instantiateEditor();
     this.setEditorContents(this.editor!, this.getEditorContents());

@@ -8,8 +8,6 @@ class selfImage extends Image {
   }
 }
 
-console.log(selfImage)
 selfImage.blotName = 'self-image'
 
 Quill.register('formats/selfImage', selfImage)
-// Quill.register('formats/selfImage', selfImage, true)

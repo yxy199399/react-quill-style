@@ -152,7 +152,7 @@ class Editor extends React.Component {
                 '3'
               ]}],
               ['image', 'video', 'formula'],
-              ['self-image'],
+              ['self-image', 'self-video', 'process'],
               ['clean']                      
             ],
           }}

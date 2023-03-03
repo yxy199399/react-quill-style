@@ -23,6 +23,4 @@ class MyItalic extends Inline {
 MyItalic.blotName = 'italic'
 MyItalic.tagName = ['EM', 'I']
 
-export default MyItalic
-
 Quill.register('formats/italic', MyItalic, true)
