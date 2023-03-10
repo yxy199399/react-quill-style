@@ -19,28 +19,19 @@ class Process extends Embed {
     */
     
     const disabledChild = document.createElement('span')
-    disabledChild.style.width = '200px'
-    disabledChild.style.height = '20px'
-    disabledChild.style.border = '2px solid #4DBF7D'
-    disabledChild.style.background = '#fff'
-    disabledChild.style.borderRadius = '12px'
-    disabledChild.style.overflow = 'hidden'
-    disabledChild.style.display = 'inline-block'
-    disabledChild.setAttribute('class', 'ql-disabled-tag')
-    disabledChild.style.textAlign = 'center'
+    // 批量添加样式
+    disabledChild.style.cssText = 'width:200px;height:20px;border:2px solid #4DBF7D;border-radius:12px;background:#fff;display:inline-block;overflow:hidden;position:relative'
     
 
     // 创建子元素
     const child = document.createElement('span')
-    child.style.height = '20px';
-    child.style.width = value
-    child.style.background = '#4DBF7D'
-    child.style.color = '#333'
-    child.style.display = 'inline-block'
-    child.style.float = 'left'
+    child.style.cssText = 'height:20px;background:#4DBF7D;display:inline-block'
+    child.style.width = value;
     disabledChild.appendChild(child)
-    disabledChild.innerHTML += value
-    // node.innerHTML = '&#xFEFF;'
+    const numChild = document.createElement('span')
+    numChild.style.cssText = 'position:absolute;left:0;top:0;bottom:0;right:0;textAlign:center;color:#333'
+    numChild.innerHTML = value
+    disabledChild.appendChild(numChild)
     node.appendChild(disabledChild)
     // node.innerHTML += data.value;
     // insertAdjacentHTML将元素插入到指定位置
