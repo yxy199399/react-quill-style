@@ -411,6 +411,7 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
       console.log(range)
       // 可以不通过toolbar插入组件
       quill.updateContents(new Delta().retain(range.index).insert({process: '50%'}));
+      // quill.updateContents(new Delta().retain(range.index).insert({mention: { denotationChar: '@', value: '11111' }}));
       setTimeout(() => {
         const content = quill.getContents();
         console.log(content)
