@@ -72,7 +72,7 @@ namespace ReactQuill {
     tabIndex?: number,
     theme?: string,
     value?: Value,
-    serverUrl?: '', // 上传地址
+    serverUrl?: string, // 上传地址
     imageProps?: { // 上传图片相关参数配置
       accept?: string // 文件格式限制
       size?: number // 文件大小限制, 单位M
@@ -83,7 +83,7 @@ namespace ReactQuill {
       fileName?: string // 附件字段名,默认file
     }
     videoProps?: {
-      serverUrl?: '', // 上传地址
+      serverUrl?: string, // 上传地址
       accept?: string // 文件格式限制
       size?: number // 文件大小限制, 单位M
       headers?: Record<string, any> // 请求头
@@ -93,7 +93,7 @@ namespace ReactQuill {
       response?: (res: Record<string, any>) => string // 请求结果回调
     }
     fileProps?: {
-      serverUrl?: '', // 上传地址
+      serverUrl?: string, // 上传地址
       accept?: string // 文件格式限制
       size?: number // 文件大小限制, 单位M
       headers?: Record<string, any> // 请求头
@@ -280,8 +280,9 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
 
   async uploadFn({
     type,
-    callback
-  }: {callback: (res: any, name?: string) => void, type: 'image' | 'file' | 'vedio'}) {
+    callback,
+    errBack,
+  }: {callback: (res: any, name?: string) => void, errBack: (data: any) => void, type: 'image' | 'file' | 'vedio'}) {
     let oInput: HTMLInputElement | null = document.createElement('input');
     let defaultImage = '.png,.gif,.jpeg,.bmp,.jpg'
     let defaultVedio = '.avi,.wmv,.flv,.mp4.,.ogg'
@@ -338,9 +339,13 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
           //   },
           //   body: formDate
           // })
-          const res = await upload(serverUrl!, formDate, {...(headers || {})}, (process) => {
+          const [err, res] = await upload(serverUrl!, formDate, {...(headers || {})}, (process) => {
             that.insetProcess(process.loaded / process.total * 100 + '%')
-          })
+          }) as any
+          if (err) {
+            errBack(err)
+            error?.(err)
+          }
           if (res && typeof res === 'string') {
             const resData = JSON.parse(res)
             let imgUrl = response?.(resData)
@@ -460,6 +465,12 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
           // 删掉进度条并插入图片
           quill.updateContents(new Delta().retain(range.index - 1).insert({ 'self-image': filePath }));
           quill.setSelection(range.index);
+        },
+        errBack: async (err) => {
+          const range = quill.getSelection(true);
+          // 删除进度条,错误处理
+          quill.updateContents(new Delta().retain(range.index - 1).delete(1));
+          // console.log(err)
         }
       })
     });
@@ -481,6 +492,12 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
           //插入附件
           quill.updateContents(new Delta().retain(range.index - 1).insert({[isentirety ?'entirety-file' : 'normal-file']: {href: filePath, innerText: name}  }));
           quill.setSelection(isentirety ? range.index : range.index - 1 + (name?.length || 0));
+        },
+        errBack: async (err) => {
+          const range = quill.getSelection(true);
+          // 删除进度条,错误处理
+          quill.updateContents(new Delta().retain(range.index - 1).delete(1));
+          // console.log(err)
         }
       })
     });
@@ -502,6 +519,12 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
           const filePath = res
           quill.updateContents(new Delta().retain(range.index - 1).insert({ 'self-video': filePath }));
           quill.setSelection(range.index + 1);
+        },
+        errBack: async (err) => {
+          const range = quill.getSelection(true);
+          // 删除进度条,错误处理
+          quill.updateContents(new Delta().retain(range.index - 1).delete(1));
+          // console.log(err)
         }
       })
       // console.log('视频上传')

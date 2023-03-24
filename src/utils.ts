@@ -38,10 +38,10 @@ export const ajax = ({
         try {
           if(xhr.status >= 200 && xhr.status < 300) {
             // 成功
-            resolve(xhr.response);
+            resolve([null, xhr.response]);
           } else {
             // 失败
-            reject(xhr.status);
+            resolve([xhr.status, null]);
           }
         } catch {
           reject(new Error('服务器错误请重试'));
