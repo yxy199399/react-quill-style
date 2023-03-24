@@ -90,21 +90,21 @@ class Editor extends React.Component {
           onChangeSelection={this.onEditorChangeSelection}
           onFocus={this.onEditorFocus}
           onBlur={this.onEditorBlur}
-          serverUrl='http://10.36.16.221:6500/file/upload'
+          serverUrl='/file/upload'
           imageProps={{
             accept: '.png,.jpg,.jpeg',
             size: 3,
             headers: {
-              token: 'c0de6c647a11dca352a58e4736a41f78'
+              token: ''
             },
             error: (err) => {
               console.log(err)
             },
             extendsData: {},
             response: (res) => {
-              console.log(res)
               if (res && res.status === 200) {
-                return 'http://10.36.16.221:6500' + res.data.fileUrl
+                // 返回完整地址
+                return "IP:port" + res.data.fileUrl
               }
             },
             fileName: 'file'
