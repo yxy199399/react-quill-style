@@ -103,7 +103,7 @@ class Editor extends React.Component {
             extendsData: {},
             response: (res) => {
               if (res && res.status === 200) {
-                // 返回完整地址
+                // 返回完整地址,
                 return "IP:port" + res.data.fileUrl
               }
             },
