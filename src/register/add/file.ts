@@ -30,7 +30,6 @@ class FileBlot extends Link {
         e.preventDefault()
         const tip = document.querySelector('.ql-tooltip')
         tip?.classList.add('ql-hidden')
-        // lookFile(value.href);
       }
       node.innerText = value.innerText
     }
@@ -48,6 +47,7 @@ class FileBlot extends Link {
     return domNode.getAttribute('href')
   }
 }
-FileBlot.blotName = 'link'
+FileBlot.blotName = 'self-file'
 FileBlot.tagName = 'A'
-Quill.register(FileBlot)
+// Quill.register(FileBlot)
+Quill.register('formats/selfFile', FileBlot)

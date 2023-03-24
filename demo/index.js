@@ -92,24 +92,25 @@ class Editor extends React.Component {
           onBlur={this.onEditorBlur}
           serverUrl='http://10.36.16.221:6500/file/upload'
           imageProps={{
+            accept: '.png,.jpg,.jpeg',
+            size: 3,
             headers: {
-              accept: '.png,.jpg,.jpeg',
-              size: 3,
-              headers: {
-                token: ''
-              },
-              error: (err) => {
-                console.log(err)
-              },
-              extendsData: {},
-              response: (res) => {
-                console.log(res)
-                if (res && res.status === 200) {
-                  return 'http://10.36.16.221:6500' + res.data.fileUrl
-                }
-              },
-              fileName: 'file'
-            }
+              token: 'c0de6c647a11dca352a58e4736a41f78'
+            },
+            error: (err) => {
+              console.log(err)
+            },
+            extendsData: {},
+            response: (res) => {
+              console.log(res)
+              if (res && res.status === 200) {
+                return 'http://10.36.16.221:6500' + res.data.fileUrl
+              }
+            },
+            fileName: 'file'
+          }}
+          fileProps={{
+            // isentirety: true
           }}
           modules={{
             toolbar: [
@@ -120,7 +121,7 @@ class Editor extends React.Component {
               [{ 'script': 'sub'}, { 'script': 'super' }],
               [{ 'indent': '-1'}, { 'indent': '+1' }], 
               [{ 'direction': 'rtl' }], 
-              [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+              [{ 'size': [false, '12px', '14px', '16px', '20px', '24px', '36px'] }],  // custom dropdown
               [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 
               [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
@@ -151,8 +152,8 @@ class Editor extends React.Component {
                 '2.9',
                 '3'
               ]}],
-              ['image', 'video', 'formula'],
-              ['self-image', 'self-video', 'process'],
+              ['image', 'video', 'formula', 'link'],
+              ['self-image', 'self-video', 'self-file'],
               ['clean']                      
             ],
           }}

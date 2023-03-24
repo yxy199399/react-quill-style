@@ -3,7 +3,7 @@ import Quill from "quill"
 import './index.css'
 const Embed = Quill.import("blots/embed");
 class Process extends Embed {
-  static create(value = '50%') {
+  static create(value: string) {
     // return super.create()
     // 添加样式
     const node = super.create()
@@ -41,9 +41,9 @@ class Process extends Embed {
     return node
   }
 
-  static formats() {
-    return true
-  }
+  // static formats() {
+  //   return true
+  // }
 
   optimize(context: any) {
     super.optimize(context)
@@ -52,7 +52,10 @@ class Process extends Embed {
     }
   }
 }
+
+// blotName使用时的名称
 Process.blotName = 'process'
 Process.tagName = 'span'
 
-Quill.register('formats/process', Process, true)
+// Quill.register('formats/process', Process, true)
+Quill.register(Process)

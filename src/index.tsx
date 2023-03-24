@@ -19,6 +19,7 @@ import icons from './register/add/icons'
 import './register'
 // title
 import { toolbarTips } from './title';
+import { upload } from './utils';
 const Delta = Quill.import('delta')
 
 // Merged namespace hack to export types along with default object
@@ -81,7 +82,27 @@ namespace ReactQuill {
       response?: (res: Record<string, any>) => string // 请求结果回调
       fileName?: string // 附件字段名,默认file
     }
-    
+    videoProps?: {
+      serverUrl?: '', // 上传地址
+      accept?: string // 文件格式限制
+      size?: number // 文件大小限制, 单位M
+      headers?: Record<string, any> // 请求头
+      error?: (res: string) => void // 错误回调
+      extendsData?: Record<string, any> // 其它参数
+      fileName?: string // 附件字段名,默认file
+      response?: (res: Record<string, any>) => string // 请求结果回调
+    }
+    fileProps?: {
+      serverUrl?: '', // 上传地址
+      accept?: string // 文件格式限制
+      size?: number // 文件大小限制, 单位M
+      headers?: Record<string, any> // 请求头
+      error?: (res: string) => void // 错误回调
+      extendsData?: Record<string, any> // 其它参数
+      fileName?: string // 附件字段名,默认file
+      response?: (res: Record<string, any>) => string // 请求结果回调
+      isentirety?: boolean //文件名是否作为一个整体显示
+    }
   }
 
   export interface UnprivilegedEditor {
@@ -242,18 +263,46 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
     });
   }
 
+  insetProcess (value: string) {
+    const quill  = this.editor as any
+    const range = quill.getSelection(true);
+    const index = range.index
+    const processContent = quill.getContents(index - 1, 1)
+
+    // 判断是否已存在进度条
+    if (processContent.ops?.length > 0 && processContent.ops[0]?.insert?.process) {
+      quill.updateContents(new Delta().retain(range.index - 1).delete(1).insert({process: value}));
+    } else {
+      quill.updateContents(new Delta().retain(range.index).insert({process: value}));
+      quill.setSelection(range.index + 1);
+    }
+  }
+
   async uploadFn({
+    type,
     callback
-  }: {callback: (res: any) => void}) {
+  }: {callback: (res: any, name?: string) => void, type: 'image' | 'file' | 'vedio'}) {
     let oInput: HTMLInputElement | null = document.createElement('input');
-    let defaultAccept = '.png,.gif,.jpeg,.bmp,.jpg'
-    const { serverUrl, imageProps } = this.props
-    const { size, headers, error, response, extendsData, accept, fileName } = imageProps || {}
+    let defaultImage = '.png,.gif,.jpeg,.bmp,.jpg'
+    let defaultVedio = '.avi,.wmv,.flv,.mp4.,.ogg'
+    let defaultFile = '.xlsx,docx.pptx,pdf'
+    const { serverUrl, imageProps, fileProps, videoProps } = this.props
+    let defaultAccept = defaultImage
+    let defaultProps = imageProps
+    if (type === 'file') {
+      defaultAccept = defaultFile;
+      defaultProps = fileProps;
+    } else if (type === 'vedio') {
+      defaultAccept = defaultVedio;
+      defaultProps = fileProps;
+    }
+    const { size, headers, error, response, extendsData, accept, fileName } = defaultProps || {}
     const fileNameKey = fileName || 'file'
     if (accept) defaultAccept = accept
     if (oInput) {
       oInput.setAttribute('type', 'file');
       oInput.setAttribute('accept', defaultAccept);
+      const that = this;
       oInput.addEventListener('change', async function () {
         if (oInput && oInput.files != null && oInput.files[0] != null) {
           const files = Array.from(oInput.files)
@@ -280,20 +329,27 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
               })
             }
           }
-          const res = await fetch(serverUrl!, {
-            method: 'post',
-            headers: {
-              ...(headers || {})
-            },
-            body: formDate
+
+          // 进度条显示不友好
+          // const res = await fetch(serverUrl!, {
+          //   method: 'post',
+          //   headers: {
+          //     ...(headers || {})
+          //   },
+          //   body: formDate
+          // })
+          const res = await upload(serverUrl!, formDate, {...(headers || {})}, (process) => {
+            that.insetProcess(process.loaded / process.total * 100 + '%')
           })
-          const resData = await res.json()
-          let imgUrl = response?.(resData)
-          if (!imgUrl && resData?.status === 200) {
-            // 默认处理，成功status === 200
-            imgUrl = resData?.data?.fileUrl
+          if (res && typeof res === 'string') {
+            const resData = JSON.parse(res)
+            let imgUrl = response?.(resData)
+            if (!imgUrl && resData?.status === 200) {
+              // 默认处理，成功status === 200
+              imgUrl = resData?.data?.fileUrl
+            }
+            callback(imgUrl, files?.[0]?.name)
           }
-          callback(imgUrl)
           // 释放内存
           oInput = null
         }
@@ -394,28 +450,72 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
         return
       }
       this.uploadFn({
+        type: 'image',
         callback: async (res) => {
+          const range = quill.getSelection(true);
+          // 删除进度条
+          quill.updateContents(new Delta().retain(range.index - 1).delete(1));
           if (!res) return
           const filePath = res
+          // 删掉进度条并插入图片
+          quill.updateContents(new Delta().retain(range.index - 1).insert({ 'self-image': filePath }));
+          quill.setSelection(range.index);
+        }
+      })
+    });
+
+    // 添加自定义文件上传事件
+    toolbar?.addHandler('self-file', () => {
+      if (!_this.props.serverUrl) {
+        return
+      }
+      this.uploadFn({
+        type: 'file',
+        callback: async (res, name) => {
+          const isentirety = this.props.fileProps?.isentirety
           const range = quill.getSelection(true);
-          quill.updateContents(new Delta().retain(range.index).insert({ image: filePath }));
-          quill.setSelection(range.index + 1);
+          // 删除进度条
+          quill.updateContents(new Delta().retain(range.index - 1).delete(1));
+          if (!res) return
+          const filePath = res
+          //插入附件
+          quill.updateContents(new Delta().retain(range.index - 1).insert({[isentirety ?'entirety-file' : 'normal-file']: {href: filePath, innerText: name}  }));
+          quill.setSelection(isentirety ? range.index : range.index - 1 + (name?.length || 0));
         }
       })
     });
 
     // 添加自定义视频上传事件
     toolbar?.addHandler('self-video', () => {
-      console.log('视频上传')
-      const range = quill.getSelection(true);
-      console.log(range)
-      // 可以不通过toolbar插入组件
-      quill.updateContents(new Delta().retain(range.index).insert({process: '50%'}));
-      // quill.updateContents(new Delta().retain(range.index).insert({mention: { denotationChar: '@', value: '11111' }}));
-      setTimeout(() => {
-        const content = quill.getContents();
-        console.log(content)
-      }, 2000);
+      if (!_this.props.serverUrl) {
+        // 执行原有方法
+        toolbar.handlers?.image.call(toolbar)
+        return
+      }
+      this.uploadFn({
+        type: 'vedio',
+        callback: async (res) => {
+          const range = quill.getSelection(true);
+          // 删除进度条,错误处理
+          quill.updateContents(new Delta().retain(range.index - 1).delete(1));
+          if (!res) return
+          const filePath = res
+          quill.updateContents(new Delta().retain(range.index - 1).insert({ 'self-video': filePath }));
+          quill.setSelection(range.index + 1);
+        }
+      })
+      // console.log('视频上传')
+      // const range = quill.getSelection(true);
+      // console.log(range)
+      // // 可以不通过toolbar插入组件
+      // quill.updateContents(new Delta().retain(range.index).insert({process: '50%'}));
+      // // 修改光标位置
+      // quill.setSelection(range.index + 1);
+      // // quill.updateContents(new Delta().retain(range.index).insert({mention: { denotationChar: '@', value: '11111' }}));
+      // setTimeout(() => {
+      //   const content = quill.getContents();
+      //   console.log(content)
+      // }, 2000);
     })
     
     this.instantiateEditor();
