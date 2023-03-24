@@ -10,7 +10,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "npm run build:lib && npm run build:dist && npm run build:css && npm run build:font",
+    "build": "npm run build:lib && npm run build:dist && npm run build:css",
     "build:lib": "tsc",
     "build:dist": "webpack",
     "build:css": "cpx 'node_modules/quill/dist/quill.*.css' dist",
