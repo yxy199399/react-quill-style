@@ -1,6 +1,6 @@
 // 自定义进度组件
 import Quill from "quill"
-import './index.css'
+import '../../index.css'
 const Embed = Quill.import("blots/embed");
 class Process extends Embed {
   static create(value: string) {

@@ -1,6 +1,6 @@
 {
   "name": "react-quill-style",
-  "version": "2.0.0",
+  "version": "2.0.5",
   "description": "The Quill rich-text editor as a React component.",
   "author": "yaoxianyou",
   "license": "",
@@ -10,11 +10,11 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "npm run build:lib && npm run build:dist && npm run build:css",
+    "build": "npm run build:lib && npm run build:dist && npm run build:css && npm run build:css1",
     "build:lib": "tsc",
     "build:dist": "webpack",
     "build:css": "cpx 'node_modules/quill/dist/quill.*.css' dist",
-    "build:font": "cpx 'src/register/font/index.css' lib/register/font",
+    "build:css1": "cpx 'src/register/index.css' lib/register",
     "watch": "tsc --watch",
     "pretest": "npm run build",
     "test": "npm run test:unit && npm run test:coverage && npm run test:browser",
@@ -48,7 +48,7 @@
     "lodash": "^4.17.4",
     "quill": "^1.3.7",
     "quill-image-drop-module": "^1.0.3",
-    "quill-image-resize-module": "^3.0.0"
+    "quill-image-resize-module--fix-imports-error": "^3.0.0"
   },
   "peerDependencies": {
     "react": "^16 || ^17 || ^18",

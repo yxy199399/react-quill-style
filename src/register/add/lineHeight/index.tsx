@@ -1,5 +1,6 @@
 import Quill from 'quill'
 const Parchment = Quill.import('parchment')
+import '../../index.css'
 const lineHeight = new Parchment.Attributor.Style('self-lineHeight', 'line-height', {
   // 这里使用Parchment.Scope.BLOCK，而非Parchment.Scope.INLINE,block直接在p标签上添加样式，
   // INLINE在p标签内部创建span标签，在span上添加样式

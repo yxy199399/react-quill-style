@@ -41,4 +41,6 @@ video
 2.xx版本在1.xx版本的基础上添加了自定义字体、自定义字体大小、首行缩进/取消首行缩进self-indention，行高self-lineHeight，图片上传self-image，视频上传self-video，文件上传self-file
 
 发布命令npm publish
+// 删除包的指定版本
+npm unpublish test@1.0.0-beta.0 
 

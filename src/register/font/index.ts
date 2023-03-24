@@ -1,5 +1,5 @@
 import Quill from 'quill'
-import './index.css'
+import '../index.css'
 // 自定义字体写法
 export const fontFamily = [
   'SimSun',
