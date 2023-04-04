@@ -45,6 +45,7 @@ class Process extends Embed {
   //   return true
   // }
 
+  // 判断标签名是否是abbr，如过不是，则换成abbr
   optimize(context: any) {
     super.optimize(context)
     if (this.domNode.tagName !== this.statics.tagName) {
@@ -53,9 +54,15 @@ class Process extends Embed {
   }
 }
 
-// blotName使用时的名称
+// blotName使用时的名称,用span粘贴时会覆盖原有span粘贴
 Process.blotName = 'process'
-Process.tagName = 'span'
+Process.tagName = 'abbr'
 
 // Quill.register('formats/process', Process, true)
-Quill.register(Process)
+Quill.register(Process, true)
+
+
+// 注册方式
+// Quill.register(format: Attributor | BlotDefinintion, supressWarning: Boolean = false)
+// Quill.register(path: String, def: any, supressWarning: Boolean = false)
+// Quill.register(defs: { [String]: any }, supressWarning: Boolean = false)

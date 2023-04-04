@@ -39,4 +39,4 @@ class EntiretyFile extends Embed {
 
 EntiretyFile.blotName = 'entirety-file'
 EntiretyFile.tagName = 'A'
-Quill.register(EntiretyFile)
+Quill.register(EntiretyFile, true)

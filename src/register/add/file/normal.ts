@@ -67,4 +67,4 @@ class  NormalFile extends Inline {
 NormalFile.blotName = 'normal-file'
 NormalFile.tagName = 'A'
 // Quill.register(FileBlot)
-Quill.register(NormalFile)
+Quill.register(NormalFile, true)

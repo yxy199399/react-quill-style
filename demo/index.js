@@ -90,7 +90,7 @@ class Editor extends React.Component {
           onChangeSelection={this.onEditorChangeSelection}
           onFocus={this.onEditorFocus}
           onBlur={this.onEditorBlur}
-          serverUrl='/file/upload'
+          serverUrl='http://localhost:4200/upload/file'
           imageProps={{
             accept: '.png,.jpg,.jpeg',
             size: 3,
@@ -102,10 +102,11 @@ class Editor extends React.Component {
             },
             extendsData: {},
             response: (res) => {
-              if (res && res.status === 200) {
-                // 返回完整地址,
-                return "IP:port" + res.data.fileUrl
-              }
+              return 'http://localhost:4200/' + res.path
+              // if (res && res.status === 200) {
+              //   // 返回完整地址,
+              //   return "IP:port" + res.data.fileUrl
+              // }
             },
             fileName: 'file'
           }}
