@@ -19,6 +19,7 @@ class  NormalFile extends Inline {
   }
 
     // 回显处理,返回值即value,可对value进行监听处理后再返回
+    // 当在这里使用formats时，自定义剪切板（clipboard）matchers中的方法不会被执行
     static formats(domNode: HTMLElement) {
       return {
         href: domNode.getAttribute('href'),
