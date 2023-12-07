@@ -411,6 +411,21 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
   componentDidMount() {
     const _this = this
     const quill = this.editor as any
+
+    // 给输入框添加事件，这里添加点击事件为列
+    // if (quill) {
+    //   quill.container.addEventListener('click', (evt: Event) => {
+    //     const event = evt || window.event
+    //     const node = event.target as HTMLElement
+    //     if (node) {
+    //       const isFull = node?.getAttribute('contenteditable')
+    //       if (isFull !== 'false') return
+    //       const range = quill.getSelection(true)
+    //       quill.setSelection(range.index)
+    //     }
+    //   })
+    // }
+
     const toolbar = quill?.getModule('toolbar')
     // 自定义操作工具栏显示,在./register/add/icons中添加对应图标
     const indentionBtn = toolbar?.container?.querySelectorAll('*[class*="ql-self-"]')
