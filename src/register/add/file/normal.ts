@@ -1,30 +1,38 @@
 import Quill from 'quill'
 const Inline = Quill.import('blots/inline')
+interface ValueItem {
+  href?: string
+  fileId?: string
+  innerText?: string
+  quill?: any
+}
 class  NormalFile extends Inline {
-  static create(value: any) {
+  static create(value: ValueItem) {
     let node = super.create(value);
-    node.setAttribute('href', value.href);
     node.setAttribute('class', 'ql-normal-file')
-    node.setAttribute('rel', 'noopener noreferrer');
-    node.setAttribute('target', '_blank');
-    node.innerHTML = value.innerText
+    node.download = value.innerText
+    node.setAttribute('data-href', value.href)
+    node.setAttribute('data-id', value.fileId)
+    node.innerText = value.innerText
     return node;
   }
 
   static value(node: HTMLElement) {
     return {
-      href: node.getAttribute('href'),
-      innerText: node.getAttribute('download'),
+      href: node.getAttribute('data-href'),
+      fileId: node.getAttribute('data-id'),
+      innerText: node.innerHTML,
     }
   }
 
-    // 回显处理,返回值即value,可对value进行监听处理后再返回
-    static formats(domNode: HTMLElement) {
-      return {
-        href: domNode.getAttribute('href'),
-        innerText: domNode.getAttribute('download'),
-      }
+  // 回显处理,返回值即value,可对value进行监听处理后再返回
+  static formats(domNode: HTMLElement) {
+    return {
+      href: domNode.getAttribute('data-href'),
+      fileId: domNode.getAttribute('data-id'),
+      innerText: domNode.innerHTML,
     }
+  }
 }
 // import { lookFile } from '@/utils/lookFile'
 // class NormalFile extends Link {
@@ -65,6 +73,6 @@ class  NormalFile extends Inline {
 //   }
 // }
 NormalFile.blotName = 'normal-file'
-NormalFile.tagName = 'A'
+NormalFile.tagName = 'INS'
 // Quill.register(FileBlot)
 Quill.register(NormalFile, true)
