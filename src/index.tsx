@@ -282,7 +282,7 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
     type,
     callback,
     errBack,
-  }: {callback: (res: any, name?: string) => void, errBack: (data: any) => void, type: 'image' | 'file' | 'vedio'}) {
+  }: {callback: (res: any, fileId?: string, name?: string) => void, errBack: (data: any) => void, type: 'image' | 'file' | 'vedio'}) {
     let oInput: HTMLInputElement | null = document.createElement('input');
     let defaultImage = '.png,.gif,.jpeg,.bmp,.jpg'
     let defaultVedio = '.avi,.wmv,.flv,.mp4.,.ogg'
@@ -497,7 +497,7 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
       }
       this.uploadFn({
         type: 'file',
-        callback: async (res, name) => {
+        callback: async (res, name, fileId) => {
           const isentirety = this.props.fileProps?.isentirety
           const range = quill.getSelection(true);
           // 删除进度条
@@ -505,8 +505,22 @@ class ReactQuill extends React.Component<ReactQuillProps, ReactQuillState> {
           if (!res) return
           const filePath = res
           //插入附件
-          quill.updateContents(new Delta().retain(range.index - 1).insert({[isentirety ?'entirety-file' : 'normal-file']: {href: filePath, innerText: name}  }));
-          quill.setSelection(isentirety ? range.index : range.index - 1 + (name?.length || 0));
+          if (isentirety) {
+            quill.updateContents(
+              new Delta().retain(range.index).insert({
+                'entirety-file': {
+                  href: filePath,
+                  fileId: fileId,
+                  innerText: name,
+                  quill: quill,
+                },
+              }),
+            )
+            quill.setSelection(range.index + 1)
+          } else {
+            quill.updateContents(new Delta().retain(range.index - 1).insert({'normal-file': {href: filePath,fileId, innerText: name}  }));
+            quill.setSelection(range.index - 1 + (name?.length || 0));
+          }
         },
         errBack: async (err) => {
           const range = quill.getSelection(true);

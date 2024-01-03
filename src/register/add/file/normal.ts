@@ -4,7 +4,6 @@ interface ValueItem {
   href?: string
   fileId?: string
   innerText?: string
-  quill?: any
 }
 class  NormalFile extends Inline {
   static create(value: ValueItem) {
